@@ -1,10 +1,12 @@
 import datetime
 import re
 
-from telegram import Update
-from telegram.ext import ContextTypes
+from telegram import Update, BotCommandScopeChat
+from telegram.ext import ContextTypes, ConversationHandler
 
+from src.commands.ru.desc import commands
 from src.modules.message_processing.message_processing import msg_process_main
+from src.modules.open_ai.dalle3 import create_image
 from src.modules.open_ai.open_ai_main import one_response
 from src.modules.logs_setup import logger
 
