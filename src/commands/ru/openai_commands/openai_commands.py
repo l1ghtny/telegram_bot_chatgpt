@@ -4,9 +4,9 @@ import re
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from etc.modules.message_processing.message_processing import msg_process_main
-from etc.modules.open_ai.open_ai_main import one_response
-from etc.modules.logs_setup import logger
+from src.modules.message_processing.message_processing import msg_process_main
+from src.modules.open_ai.open_ai_main import one_response
+from src.modules.logs_setup import logger
 
 logger = logger.logging.getLogger("bot")
 

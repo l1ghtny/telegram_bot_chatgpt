@@ -4,11 +4,11 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler
 
 from credentials import bot_token
-from etc.commands.ru.misc.misc_commands import start_main
-from etc.commands.ru.openai_commands.openai_commands import secret_access, check_for_gpt_question, secret_access_remove, \
+from src.commands.ru.misc.misc_commands import start_main
+from src.commands.ru.openai_commands.openai_commands import secret_access, check_for_gpt_question, secret_access_remove, \
     start2, response2, ASKED, cancel2, RESPONSE, response, start, cancel
 
-from etc.modules.logs_setup import logger
+from src.modules.logs_setup import logger
 
 logger = logger.logging.getLogger("bot")
 

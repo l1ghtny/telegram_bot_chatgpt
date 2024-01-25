@@ -3,7 +3,7 @@ import openai
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from etc.modules.logs_setup import logger
+from src.modules.logs_setup import logger
 
 load_dotenv()
 openai.organization = "org-dTq0wzkkXgmTQ1GIDabM4fva"

@@ -1,5 +1,5 @@
-from etc.modules.logs_setup import logger
-from etc.modules.open_ai.open_ai_main import multiple_responses
+from src.modules.logs_setup import logger
+from src.modules.open_ai.open_ai_main import multiple_responses
 
 logger = logger.logging.getLogger("bot")
 

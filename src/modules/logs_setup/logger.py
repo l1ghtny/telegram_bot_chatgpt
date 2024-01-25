@@ -1,5 +1,5 @@
 from logging.config import dictConfig
-from etc.modules.logs_setup.vars import path
+from src.modules.logs_setup.vars import path
 import logging
 
 LOGGING_CONFIG = {
@@ -27,7 +27,7 @@ LOGGING_CONFIG = {
         "file": {
             "level": "DEBUG",
             "formatter": "standard",
-            "class": "etc.modules.logs_setup.logger_settings.MyTimedRotatingFileHandler",
+            "class": "src.modules.logs_setup.logger_settings.MyTimedRotatingFileHandler",
             "when": "h",
             "interval": 12,
             "filename": "./logs/main_log.log",
