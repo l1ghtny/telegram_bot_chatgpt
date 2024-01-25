@@ -1,6 +1,6 @@
 FROM python:3
 
-WORKDIR /home/tg-bot/
+WORKDIR /home/tg-bot-gpt/
 RUN mkdir logs
 
 COPY requirements.txt ./

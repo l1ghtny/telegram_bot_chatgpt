@@ -36,12 +36,6 @@ async def one_response(message):
     except Exception as e:
         logger.exception(e)
 
-    # logger.info('success')
-    # reply = response.choices[0].message.content
-    # content = reply
-    # # tokens_total = response.usage.total_tokens
-    # return content
-
 
 async def multiple_responses(messages):
     client_ai = OpenAI()
