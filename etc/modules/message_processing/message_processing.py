@@ -1,16 +1,19 @@
-import telegram as t
-
-from modules.logs_setup import logger
-from modules.open_ai.open_ai_main import multiple_responses
+from etc.modules.logs_setup import logger
+from etc.modules.open_ai.open_ai_main import multiple_responses
 
 logger = logger.logging.getLogger("bot")
 
 
 async def msg_process_main(context, message):
     messages_texts = await get_replies(message)
+    logger.info('got texts')
     formatted_dialog = await format_dialog(messages_texts, message, context)
-    reply = await multiple_responses(formatted_dialog)
-    return reply
+    logger.info('formatted into dialog')
+    async for value in multiple_responses(formatted_dialog):
+        if value:
+            yield value
+    # reply = await multiple_responses(formatted_dialog)
+    # return reply
 
 
 async def get_replies(message):

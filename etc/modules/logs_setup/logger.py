@@ -1,7 +1,6 @@
-import datetime
-import logging
 from logging.config import dictConfig
-
+from etc.modules.logs_setup.vars import path
+import logging
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -28,7 +27,7 @@ LOGGING_CONFIG = {
         "file": {
             "level": "DEBUG",
             "formatter": "standard",
-            "class": "modules.logs_setup.logger_settings.MyTimedRotatingFileHandler",
+            "class": "etc.modules.logs_setup.logger_settings.MyTimedRotatingFileHandler",
             "when": "h",
             "interval": 12,
             "filename": "./logs/main_log.log",
