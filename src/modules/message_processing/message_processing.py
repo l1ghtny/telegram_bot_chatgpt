@@ -1,22 +1,33 @@
+from pprint import pprint
+from typing import AsyncIterable
 from src.modules.logs_setup import logger
-from src.modules.open_ai.open_ai_main import multiple_responses
+from src.modules.open_ai.open_ai_main import get_gpt4_response
 
 logger = logger.logging.getLogger("bot")
 
 
-async def msg_process_main(context, message):
-    messages_texts = await get_replies(message)
-    logger.info('got texts')
-    formatted_dialog = await format_dialog(messages_texts, message, context)
-    logger.info('formatted into dialog')
-    async for value in multiple_responses(formatted_dialog):
-        if value:
-            yield value
-    # reply = await multiple_responses(formatted_dialog)
-    # return reply
+async def msg_process_main(context, message, multiple: bool) -> AsyncIterable:
+    if multiple:
+        messages_texts = await get_replies(message)
+        logger.info('got texts')
+        formatted_dialog = await format_dialog(messages_texts, message, context)
+        logger.info('formatted into dialog')
+        pprint(formatted_dialog)
+        async for value in get_gpt4_response(formatted_dialog):
+            if value:
+                yield value
+    else:
+        logger.info('Getting message text')
+        message_meaning = message.text.replace(f'@{context.bot.username} ', '')
+        messages = [{"role": "user", "content": f"{message_meaning}"}]
+        async for value in get_gpt4_response(messages):
+            if value:
+                value_edited = value.replace('#', '')
+                # value_edited = value_edited1.replace('**', '*')
+                yield value_edited
 
 
-async def get_replies(message):
+async def get_replies(message) -> list:
     messages_text = []
     while message.reply_to_message is not None:
         message = message.reply_to_message
@@ -29,7 +40,7 @@ async def get_replies(message):
     return messages_text
 
 
-async def format_dialog(messages_texts, message, context):
+async def format_dialog(messages_texts, message, context) -> list:
     messages_texts.reverse()
     dialog_formatted = []
     for i in messages_texts:

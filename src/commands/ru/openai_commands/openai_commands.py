@@ -7,7 +7,6 @@ from telegram.ext import ContextTypes, ConversationHandler
 from src.commands.ru.desc import commands
 from src.modules.message_processing.message_processing import msg_process_main
 from src.modules.open_ai.dalle3 import create_image
-from src.modules.open_ai.open_ai_main import one_response
 from src.modules.logs_setup import logger
 
 logger = logger.logging.getLogger("bot")
@@ -20,19 +19,19 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
     message = update.effective_message
     message_text = message.text
     if f'@{context.bot.username}' in message_text:
+        logger.info('Replying to message %s', message.text)
         first_reply = await update.effective_message.reply_text(text='Thinking...', reply_to_message_id=message.id)
-        message_text_meaning = message_text.replace(f'@{context.bot.username} ', '')
-        logger.info(f'asking the question:{message_text_meaning}')
         current_time = datetime.datetime.now()
-        async for value in one_response(message_text_meaning):
+        async for value in msg_process_main(context, message, False):
             if re.search('[A-Za-zА-яЁё]', value):
                 timedelta = datetime.datetime.now() - current_time
                 if timedelta.seconds > 3 and first_reply.text:
-                    await first_reply.edit_text(text=value)
+                    await first_reply.edit_text(value)
                     current_time = datetime.datetime.now()
+        logger.info('Finished fetching reply')
         if first_reply.text != value:
-            await first_reply.edit_text(text=value)
-        logger.info('success')
+            await first_reply.edit_text(value)
+        logger.info('All done')
 
     elif message.reply_to_message is not None:
         reply_user = message.reply_to_message.from_user
@@ -40,7 +39,7 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
             logger.info('Replying to message %s', message.text)
             first_reply = await update.effective_message.reply_text(text='Thinking...', reply_to_message_id=message.id)
             current_time = datetime.datetime.now()
-            async for value in msg_process_main(context, message):
+            async for value in msg_process_main(context, message, True):
                 if re.search('[A-Za-zА-яЁё]', value):
                     timedelta = datetime.datetime.now() - current_time
                     if timedelta.seconds > 3 and first_reply.text:
@@ -49,7 +48,7 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
             logger.info('Finished fetching reply')
             if first_reply.text != value:
                 await first_reply.edit_text(value)
-    logger.info('All done')
+        logger.info('All done')
 
 
 async def start2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -62,18 +61,17 @@ async def start2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def response2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     message = await update.effective_message.reply_text('Думаю...')
-    message_text_meaning = update.effective_message.text
     current_time = datetime.datetime.now()
-    async for value in one_response(message_text_meaning):
+    async for value in msg_process_main(context, update.effective_message, False):
         if re.search('[A-Za-zА-яЁё]', value):
             timedelta = datetime.datetime.now() - current_time
-            print(timedelta)
             if timedelta.seconds > 3 and message.text:
                 await message.edit_text(text=value)
                 current_time = datetime.datetime.now()
+    logger.info('Finished fetching reply')
     if message.text != value:
         await message.edit_text(text=value)
-    logger.info('success')
+    logger.info('All done')
 
     return ConversationHandler.END
 
@@ -96,12 +94,14 @@ async def response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    logger.info('cancelled')
     await update.effective_message.reply_text('Запрос отменён')
 
     return ConversationHandler.END
 
 
 async def cancel2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    logger.info('cancelled')
     await update.message.reply_text('Запрос отменён')
 
     return ConversationHandler.END

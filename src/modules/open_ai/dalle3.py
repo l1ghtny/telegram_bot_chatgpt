@@ -24,4 +24,5 @@ async def create_image(prompt):
     logger.info('Image generated')
     image_url = result.data[0].url
     logger.info(image_url)
+    logger.info('revised prompt: %s', result.data[0].revised_prompt)
     return image_url

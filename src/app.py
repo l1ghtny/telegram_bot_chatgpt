@@ -1,7 +1,7 @@
 import datetime
 
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler, ContextTypes
 
 from credentials import bot_token
 from src.commands.ru.misc.misc_commands import start_main
@@ -13,6 +13,15 @@ from src.modules.logs_setup import logger
 logger = logger.logging.getLogger("bot")
 
 
+# TODO:
+#  0.5 Finish designing the database
+#  1. Add requests to database
+#  2. Get subscription check into the gpt commands
+#  3. Mock analysis commands
+#  4. Create admin role with different menu
+#  5. Add database to docker image
+
+
 def main() -> None:
     application = Application.builder().token(bot_token).build()
 
@@ -21,20 +30,22 @@ def main() -> None:
     mention_handler = MessageHandler(filters.TEXT, check_for_gpt_question)
     remove_handler = CommandHandler('secret_access_remove', secret_access_remove)
     gpt_handler = ConversationHandler(
+        name='ask_gpt4',
         entry_points=[CommandHandler("ask", start2)],
         states={
             ASKED: [
-                MessageHandler(filters.TEXT, response2)
+                MessageHandler(filters.TEXT & ~filters.COMMAND, response2)
             ],
         },
         fallbacks=[CommandHandler("cancel_chat", cancel2)],
     )
 
     conv_handler = ConversationHandler(
+        name='Dalle3',
         entry_points=[CommandHandler("start_dalle", start)],
         states={
             RESPONSE: [
-                MessageHandler(filters.TEXT, response)
+                MessageHandler(filters.TEXT & ~filters.COMMAND, response)
             ],
         },
         fallbacks=[CommandHandler("cancel_generation", cancel)],
