@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.12-alpine
 
 WORKDIR /home/tg-bot-gpt/
 RUN mkdir logs
