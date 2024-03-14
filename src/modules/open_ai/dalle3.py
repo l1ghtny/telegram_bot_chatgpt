@@ -12,7 +12,7 @@ openai.organization = "org-dTq0wzkkXgmTQ1GIDabM4fva"
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-async def create_image(prompt):
+async def create_image(prompt) -> str:
     client = OpenAI()
     logger.info('Requested an image')
     result = client.images.generate(

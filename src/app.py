@@ -1,4 +1,5 @@
 import datetime
+from pprint import pprint
 
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler, ContextTypes
@@ -24,7 +25,6 @@ logger = logger.logging.getLogger("bot")
 
 def main() -> None:
     application = Application.builder().token(bot_token).build()
-
     start_handler = CommandHandler('start', start_main)
     secret_handler = CommandHandler('secret_access', secret_access)
     mention_handler = MessageHandler(filters.TEXT, check_for_gpt_question)
@@ -40,7 +40,7 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel_chat", cancel2)],
     )
 
-    conv_handler = ConversationHandler(
+    image_handler = ConversationHandler(
         name='Dalle3',
         entry_points=[CommandHandler("start_dalle", start)],
         states={
@@ -51,13 +51,8 @@ def main() -> None:
         fallbacks=[CommandHandler("cancel_generation", cancel)],
     )
 
-    application.add_handler(secret_handler)
-    application.add_handler(remove_handler)
-    application.add_handler(conv_handler)
-    application.add_handler(gpt_handler)
-    application.add_handler(start_handler)
-    application.add_handler(mention_handler)
+    application.add_handlers([gpt_handler, image_handler])
+    application.add_handlers([secret_handler, remove_handler, start_handler, mention_handler])
 
-    logger.info(f'bot started at {datetime.datetime.now()}')
-
+    logger.info(f'gpt bot started at {datetime.datetime.now()}')
     application.run_polling(allowed_updates=Update.ALL_TYPES)

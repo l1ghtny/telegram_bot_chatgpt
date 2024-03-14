@@ -37,7 +37,7 @@ LOGGING_CONFIG = {
     "loggers": {
         "bot": {
             "handlers": ["console", "file"],
-            "level": "INFO",
+            "level": "DEBUG",
             "propagate": False
         },
         "discord": {
