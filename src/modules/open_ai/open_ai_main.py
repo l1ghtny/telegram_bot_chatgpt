@@ -14,6 +14,7 @@ model4o = 'gpt-4o'
 role = """You are a nice and articulated helper"""
 
 logger = logger.logging.getLogger('bot')
+client_ai = AsyncOpenAI(api_key=openai_api_key, organization=openai_organization)
 
 
 async def get_gpt4_response(messages):
