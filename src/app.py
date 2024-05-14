@@ -24,7 +24,7 @@ logger = logger.logging.getLogger("bot")
 
 
 def main() -> None:
-    application = Application.builder().token(bot_token).build()
+    application = Application.builder().token(bot_token).concurrent_updates(True).build()
     start_handler = CommandHandler('start', start_main)
     secret_handler = CommandHandler('secret_access', secret_access)
     mention_handler = MessageHandler(filters.TEXT, check_for_gpt_question)
@@ -55,4 +55,5 @@ def main() -> None:
     application.add_handlers([secret_handler, remove_handler, start_handler, mention_handler])
 
     logger.info(f'gpt bot started at {datetime.datetime.now()}')
+    logger.info('handlers: \n %s', application.handlers.items())
     application.run_polling(allowed_updates=Update.ALL_TYPES)
