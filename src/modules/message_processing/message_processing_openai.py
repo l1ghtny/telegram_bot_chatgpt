@@ -1,5 +1,5 @@
-from pprint import pprint
 from typing import AsyncIterable
+
 from src.modules.logs_setup import logger
 from src.modules.open_ai.open_ai_main import get_gpt4_response
 
@@ -12,7 +12,6 @@ async def msg_process_main(context, message, multiple: bool) -> AsyncIterable:
         logger.info('got texts')
         formatted_dialog = await format_dialog(messages_texts, message, context)
         logger.info('formatted into dialog')
-        pprint(formatted_dialog)
         async for value in get_gpt4_response(formatted_dialog):
             if value:
                 yield value
