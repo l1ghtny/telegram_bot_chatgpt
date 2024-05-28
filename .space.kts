@@ -5,19 +5,28 @@
 */
 
 job("Build and push Docker") {
-    // both 'host.shellScript' and 'host.dockerBuildPush' run on the same host
-    host("Build artifacts and a Docker image") {
-
+    host("Build and push a Docker image") {
         dockerBuildPush {
-            // Note that if Dockerfile is in the project root, we don't specify its path.
-            // We also imply that Dockerfile takes artifacts from ./build and puts them to image
-            // e.g. with 'ADD /build/app.jar /root/home/app.jar'
-          	val file = "."
+            // by default, the step runs not only 'docker build' but also 'docker push'
+            // to disable pushing, add the following line:
+            // push = false
 
-            val spaceRepo = "docker pull lightny.registry.jetbrains.space/p/main/tg-gpt-bot/gpt-bot:latest"
+            // path to Docker context (by default, context is working dir)
+            // path to Dockerfile relative to the project root
+            // if 'file' is not specified, Docker will look for it in 'context'/Dockerfile
+            file = "Dockerfile"
+            // build-time variables
+            // args["HTTP_PROXY"] = "http://10.20.30.2:1234"
+            // image labels
+            labels["vendor"] = "lightny"
+            // to add a raw list of additional build arguments, use
+            // extraArgsForBuildCommand = listOf("...")
+            // to add a raw list of additional push arguments, use
+            // extraArgsForPushCommand = listOf("...")
+            // image tags
             tags {
-                +"$spaceRepo:0.${"$"}JB_SPACE_EXECUTION_NUMBER"
-                +"$spaceRepo:lts"
+                // use current job run number as a tag - '0.0.run_number'
+                +"lightny.registry.jetbrains.space/p/main/tg-gpt-bot:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
             }
         }
     }
