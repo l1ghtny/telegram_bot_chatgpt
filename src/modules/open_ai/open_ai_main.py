@@ -22,7 +22,7 @@ async def get_gpt4_response(messages):
         all_messages = [{"role": "system", "content": f"{role}"}] + messages
         logger.info('Accessing OpenAI API')
         response = await client_ai.chat.completions.create(
-            model=model4,
+            model=model4o,
             messages=all_messages,
             stream=True,
             stream_options={"include_usage": True}
