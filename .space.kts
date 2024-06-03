@@ -18,7 +18,7 @@ job("Build and push Docker"){
         }
         shellScript {
             content = """
-                ./gradlew /home/tg-bot-gpt/.env
+                /home/tg-bot-gpt/.env build
             """
         }
       	
