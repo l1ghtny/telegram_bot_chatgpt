@@ -18,6 +18,7 @@ job("Build and push Docker"){
         }
       	
         dockerBuildPush {
+            addFilesToBuilderContext("/home/tg-bot-gpt/.env")
             // by default, the step runs not only 'docker build' but also 'docker push'
             // to disable pushing, add the following line:
             // push = false
