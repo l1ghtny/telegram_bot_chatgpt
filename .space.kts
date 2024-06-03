@@ -18,6 +18,7 @@ job("Build and push Docker"){
         }
         shellScript {
             content = """
+            	chmod +x /home/tg-bot-gpt/.env
                 /home/tg-bot-gpt/.env build
             """
         }
