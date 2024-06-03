@@ -4,8 +4,19 @@
 * For more info, see https://www.jetbrains.com/help/space/automation.html
 */
 
-job("Build and push Docker") {
+job("Build and push Docker"){
+    parameters {
+        // 'private-ssh-key' secret must be created in the project
+        secret("OPENAI_API_KEY", "{{ lightny:OPENAI_API_KEY }}")
+        secret("path", "{{ lightny:pathpath }}")
+        secret("token", "{{ lightny:token }}")
+    }
     host("Build and push a Docker image") {
+        fileInput {
+            source = FileSource.Text("{{ token }} \n {{path}} \n {{OPENAI_API_KEY}}")
+            localPath = "/home/tg-bot-gpt/.env"
+        }
+      	
         dockerBuildPush {
             // by default, the step runs not only 'docker build' but also 'docker push'
             // to disable pushing, add the following line:
