@@ -16,9 +16,13 @@ job("Build and push Docker"){
             source = FileSource.Text("{{ token }} \n {{path}} \n {{OPENAI_API_KEY}}")
             localPath = "/home/tg-bot-gpt/.env"
         }
+        shellScript {
+            content = """
+                ./gradlew /home/tg-bot-gpt/.env
+            """
+        }
       	
         dockerBuildPush {
-            addFilesToBuilderContext("/home/tg-bot-gpt/.env")
             // by default, the step runs not only 'docker build' but also 'docker push'
             // to disable pushing, add the following line:
             // push = false
