@@ -7,9 +7,9 @@
 job("Build and push Docker"){
     parameters {
         // 'private-ssh-key' secret must be created in the project
-        secret("OPENAI_API_KEY", "{{ lightny:OPENAI_API_KEY }}")
-        secret("path", "{{ lightny:pathpath }}")
-        secret("token", "{{ lightny:token }}")
+        secret("OPENAI_API_KEY", "{{ project:OPENAI_API_KEY }}")
+        secret("path", "{{ project:pathpath }}")
+        secret("token", "{{ project:token }}")
     }
     host("Build and push a Docker image") {
         fileInput {
