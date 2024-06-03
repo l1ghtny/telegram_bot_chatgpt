@@ -8,7 +8,7 @@ job("Build and push Docker"){
     parameters {
         // 'private-ssh-key' secret must be created in the project
         secret("OPENAI_API_KEY", "{{ project:OPENAI_API_KEY }}")
-        secret("path", "{{ project:pathpath }}")
+        secret("path", "{{ project:path }}")
         secret("token", "{{ project:token }}")
     }
     host("Build and push a Docker image") {
