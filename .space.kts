@@ -12,12 +12,12 @@ job("Build and push Docker"){
     //     secret("token", "{{ project:token }}")
     // }
     host("Build and push a Docker image") {
-        // shellScript {
-        //     content = """
-        //         chmod +x /home/tg-bot-gpt/.env
-        //         /home/tg-bot-gpt/.env build
-        //     """
-        // }
+        shellScript {
+            content = """
+                chmod +x /home/tg-bot-gpt/.env
+                /home/tg-bot-gpt/.env build
+            """
+        }
       	
         dockerBuildPush {
             // by default, the step runs not only 'docker build' but also 'docker push'
