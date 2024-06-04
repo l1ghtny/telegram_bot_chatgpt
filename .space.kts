@@ -43,7 +43,7 @@ job("Build and push Docker"){
             // image tags
             tags {
                 // use current job run number as a tag - '0.0.run_number'
-                +"lightny.registry.jetbrains.space/p/main/tg-gpt-bot:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
+                +"lightny.registry.jetbrains.space/p/main/tg-gpt-bot/gpt-bot:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
             }
         }
     }
