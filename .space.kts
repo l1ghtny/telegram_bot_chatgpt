@@ -35,7 +35,7 @@ job("Build and push Docker"){
             // build-time variables
             // args["HTTP_PROXY"] = "http://10.20.30.2:1234"
             // image labels
-            labels["vendor"] = "lightny"
+            //labels["vendor"] = "lightny"
             // to add a raw list of additional build arguments, use
             // extraArgsForBuildCommand = listOf("...")
             // to add a raw list of additional push arguments, use
