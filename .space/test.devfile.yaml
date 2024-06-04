@@ -24,7 +24,7 @@ attributes:
       description: 'api key for accessing chatgpt'
     - name: path
       description: 'not really sure why but ok'
-    - name: token#
+    - name: token
       description: 'tg token'
 components:
 - name: dev-container
@@ -33,8 +33,3 @@ components:
     # use image from a Space Packages registry
     image: lightny.registry.jetbrains.space/p/main/tg-gpt-bot/gpt-bot:latest
     # environment variables
-    env:
-      - name: API_URL
-        value: 'https://my-site/http_api'
-      - name: PATH_IMG
-        value: './img/'
