@@ -1,0 +1,40 @@
+schemaVersion: 2.2.0
+metadata:
+  name: 'My custom dev env configuration'
+attributes:
+  space:
+    # regular, large, xlarge
+    instanceType: regular
+    # a default IDE for the project
+    editor:
+      # (Required) IDE type: Idea, WebStorm, PyCharm,
+      # RubyMine, CLion, Fleet, GoLand, PhpStorm
+      type: PyCharm
+      # Space uses JetBrains Toolbox App to install IDEs to a dev environment.
+      # updateChannel defines IDE version release stage: Release, EAP
+      updateChannel: Release
+      # JVM configuration (appends to the default .vmoptions file)
+    # a warm-up snapshot
+    # Parameters and secretes required by a dev environment
+    # e.g., credentials to an external service
+    requiredSecrets:
+    # (Required) the name of the environment variable
+    # that will be available in the dev environment
+    - name: OPENAI_API_KEY
+      description: 'api key for accessing chatgpt'
+    - name: path
+      description: 'not really sure why but ok'
+    - name: token#
+      description: 'tg token'
+components:
+- name: dev-container
+  # Dev environment container config
+  container:
+    # use image from a Space Packages registry
+    image: lightny.registry.jetbrains.space/p/main/tg-gpt-bot/gpt-bot:latest
+    # environment variables
+    env:
+      - name: API_URL
+        value: 'https://my-site/http_api'
+      - name: PATH_IMG
+        value: './img/'
