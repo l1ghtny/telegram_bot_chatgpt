@@ -48,3 +48,20 @@ job("Build and push Docker"){
         }
     }
 }
+
+job("Update Docker") {
+
+  host("Update docker") {
+    shellScript {
+            interpreter = "/bin/bash"
+            // note that you should escape the $ symbol in a Kotlin way
+            content = """
+                cd /home/telegram-bot-gpt/
+                docker stop gpt-bot
+                docker rm gpt-bot
+                docker pull lightny.registry.jetbrains.space/p/main/tg-gpt-bot/gpt-bot:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER
+                docker run -d --name gpt-bot lightny.registry.jetbrains.space/p/main/tg-gpt-bot/gpt-bot:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER
+            """
+        }
+  }
+}
