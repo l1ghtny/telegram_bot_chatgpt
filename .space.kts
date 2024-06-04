@@ -47,12 +47,9 @@ job("Build and push Docker"){
             }
         }
     }
-}
 
-job("Update Docker") {
-
-  host("Update docker") {
-    shellScript {
+    host("Update docker") {
+    	shellScript {
             interpreter = "/bin/bash"
             // note that you should escape the $ symbol in a Kotlin way
             content = """
