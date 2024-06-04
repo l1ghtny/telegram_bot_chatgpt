@@ -11,11 +11,7 @@ job("Build and push Docker"){
         secret("path", "{{ project:path }}")
         secret("token", "{{ project:token }}")
     }
-    host("Build and push a Docker image") //{
-     //   fileInput {
-     //       source = FileSource.Text("{{ token }} \n {{ path }} \n {{ OPENAI_API_KEY }}")
-     //       localPath = "/home/tg-bot-gpt/.env"
-     //   }
+    host("Build and push a Docker image")
         shellScript {
             content = """
             	chmod +x /home/tg-bot-gpt/.env
