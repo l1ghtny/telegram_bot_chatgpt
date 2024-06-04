@@ -12,16 +12,16 @@ job("Build and push Docker"){
     //     secret("token", "{{ project:token }}")
     // }
     host("Build and push a Docker image") {
-        fileInput {
-            source = FileSource.Text("token:{{ project:token }} \n path:{{ project:path }} \n openai_api_key:{{ project:OPENAI_API_KEY }}")
-            localPath = "/home/tg-bot-gpt/.env"
-        }
-        shellScript {
-            content = """
-                chmod +x /home/tg-bot-gpt/.env
-                /home/tg-bot-gpt/.env .
-            """
-        }
+        // fileInput {
+        //     source = FileSource.Text("token:{{ project:token }} \n path:{{ project:path }} \n openai_api_key:{{ project:OPENAI_API_KEY }}")
+        //     localPath = "/home/tg-bot-gpt/.env"
+        // }
+        // shellScript {
+        //     content = """
+        //         chmod +x /home/tg-bot-gpt/.env
+        //         /home/tg-bot-gpt/.env .
+        //     """
+        // }
       	
         dockerBuildPush {
             // by default, the step runs not only 'docker build' but also 'docker push'
@@ -43,6 +43,7 @@ job("Build and push Docker"){
             // image tags
             tags {
                 // use current job run number as a tag - '0.0.run_number'
+              	+"tg-gpt-bot"
                 +"lightny.registry.jetbrains.space/p/main/tg-gpt-bot:1.0.${"$"}JB_SPACE_EXECUTION_NUMBER"
             }
         }
