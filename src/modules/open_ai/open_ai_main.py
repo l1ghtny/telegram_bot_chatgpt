@@ -17,12 +17,12 @@ logger = logger.logging.getLogger('bot')
 client_ai = AsyncOpenAI(api_key=openai_api_key, organization=openai_organization)
 
 
-async def get_gpt4_response(messages):
+async def get_gpt4_response(messages, user_id):
     try:
         all_messages = [{"role": "system", "content": f"{role}"}] + messages
         logger.info('Accessing OpenAI API')
         response = await client_ai.chat.completions.create(
-            model=model4,
+            model=model4o,
             messages=all_messages,
             stream=True,
             stream_options={"include_usage": True}
@@ -36,10 +36,11 @@ async def get_gpt4_response(messages):
             if event.choices and event.choices[0].delta.content:
                 event_text = event.choices[0].delta.content
                 completion_text += event_text
-                yield completion_text
-            if event.usage is not None:
-                # record usage
-                pass
+                event_usage = None
+                yield completion_text, event_usage
+            if event.usage:
+                event_usage = event.usage
+                yield completion_text, event_usage
     except Exception as e:
         logger.exception(e)
         completion_text = 'There was an error on the side of the API'

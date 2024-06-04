@@ -1,29 +1,35 @@
 from typing import AsyncIterable
 
+from src.modules.database.operations.usage import add_gpt_usage
 from src.modules.logs_setup import logger
 from src.modules.open_ai.open_ai_main import get_gpt4_response
 
 logger = logger.logging.getLogger("bot")
 
 
-async def msg_process_main(context, message, multiple: bool) -> AsyncIterable:
+async def msg_process_main(context, message, multiple: bool, user_id) -> AsyncIterable:
     if multiple:
         messages_texts = await get_replies(message)
         logger.info('got texts')
         formatted_dialog = await format_dialog(messages_texts, message, context)
         logger.info('formatted into dialog')
-        async for value in get_gpt4_response(formatted_dialog):
+        async for value in get_gpt4_response(formatted_dialog, user_id):
             if value:
                 yield value
     else:
         logger.info('Getting message text')
         message_meaning = message.text.replace(f'@{context.bot.username} ', '')
         messages = [{"role": "user", "content": f"{message_meaning}"}]
-        async for value in get_gpt4_response(messages):
+        async for value, usage in get_gpt4_response(messages, user_id):
             if value:
                 value_edited = value.replace('#', '')
                 # value_edited = value_edited1.replace('**', '*')
                 yield value_edited
+            if usage:
+                try:
+                    await add_gpt_usage(user_id, usage.prompt_tokens, usage.completion_tokens)
+                except Exception as e:
+                    logger.exception(e)
 
 
 async def get_replies(message) -> list:

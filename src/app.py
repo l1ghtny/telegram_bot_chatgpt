@@ -1,14 +1,12 @@
 import datetime
-from pprint import pprint
 
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler
 
-from credentials import bot_token
+from credentials import bot_test_token
 from src.commands.ru.misc.misc_commands import start_main
 from src.commands.ru.openai_commands.openai_commands import secret_access, check_for_gpt_question, secret_access_remove, \
     start2, response2, ASKED, cancel2, RESPONSE, response, start, cancel
-
 from src.modules.logs_setup import logger
 
 logger = logger.logging.getLogger("bot")
@@ -24,7 +22,7 @@ logger = logger.logging.getLogger("bot")
 
 
 def main() -> None:
-    application = Application.builder().token(bot_token).concurrent_updates(True).build()
+    application = Application.builder().token(bot_test_token).concurrent_updates(True).build()
     start_handler = CommandHandler('start', start_main)
     secret_handler = CommandHandler('secret_access', secret_access)
     mention_handler = MessageHandler(filters.TEXT, check_for_gpt_question)
