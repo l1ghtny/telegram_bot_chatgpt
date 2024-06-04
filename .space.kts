@@ -11,7 +11,7 @@ job("Build and push Docker"){
     //     secret("path", "{{ project:path }}")
     //     secret("token", "{{ project:token }}")
     // }
-    host("Build and push a Docker image")
+    host("Build and push a Docker image") {
         // shellScript {
         //     content = """
         //         chmod +x /home/tg-bot-gpt/.env
