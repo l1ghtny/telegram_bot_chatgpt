@@ -13,7 +13,7 @@ job("Build and push Docker"){
     // }
     host("Build and push a Docker image") {
         fileInput {
-            source = FileSource.Text("{{ project:token }} \n {{ project:path }} \n {{ project:OPENAI_API_KEY }}")
+            source = FileSource.Text("token:{{ project:token }} \n path:{{ project:path }} \n openai_api_key:{{ project:OPENAI_API_KEY }}")
             localPath = "/home/tg-bot-gpt/.env"
         }
         shellScript {
