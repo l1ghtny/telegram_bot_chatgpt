@@ -6,7 +6,6 @@ RUN mkdir logs
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY /home/tg-bot-gpt/.env .
 ADD src ./src
 COPY main.py .
 COPY credentials.py .
