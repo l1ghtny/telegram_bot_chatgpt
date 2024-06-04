@@ -5,19 +5,19 @@
 */
 
 job("Build and push Docker"){
-    parameters {
-        // 'private-ssh-key' secret must be created in the project
-        secret("OPENAI_API_KEY", "{{ project:OPENAI_API_KEY }}")
-        secret("path", "{{ project:path }}")
-        secret("token", "{{ project:token }}")
-    }
-    host("Build and push a Docker image")
-        shellScript {
-            content = """
-            	chmod +x /home/tg-bot-gpt/.env
-                /home/tg-bot-gpt/.env build
-            """
+        parameters {
+            // 'private-ssh-key' secret must be created in the project
+            secret("OPENAI_API_KEY", "{{ project:OPENAI_API_KEY }}")
+            secret("path", "{{ project:path }}")
+            secret("token", "{{ project:token }}")
         }
+        host("Build and push a Docker image")
+            shellScript {
+                content = """
+                    chmod +x /home/tg-bot-gpt/.env
+                    /home/tg-bot-gpt/.env build
+                """
+            }
       	
         dockerBuildPush {
             // by default, the step runs not only 'docker build' but also 'docker push'
