@@ -5,7 +5,7 @@ from src.modules.database.sql_models import Users, Payments
 
 
 async def add_user(user_id, payment_plan_id, country_id):
-    user = Users(id=user_id, payment_plan_id=payment_plan_id, country_id=country_id)
+    user = Users(tg_id=user_id, payment_plan_id=payment_plan_id, language=country_id)
     for session in get_session():
         session.add(user)
         session.commit()
@@ -20,7 +20,17 @@ async def add_payment(uu_id, created_at, currency, service, user_id, amount):
 
 async def check_user_exists(user_id):
     for session in get_session():
-        query = select(Users).where(Users.id == user_id)
+        query = select(Users).where(Users.tg_id == user_id)
         result = session.exec(query)
-        exists = bool(result.first())
+        user = result.first()
+        exists = bool(user)
         return exists
+
+
+async def revert_payment(user_id, payment_id):
+    for session in get_session():
+        query = select(Payments).where(Payments.uuid == payment_id)
+        result = session.exec(query)
+        payment = result.first()
+        return payment
+

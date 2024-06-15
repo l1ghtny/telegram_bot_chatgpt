@@ -36,11 +36,11 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
 
     elif message.reply_to_message is not None:
         reply_user = message.reply_to_message.from_user
-        if reply_user.id == context.bot.id:
+        if reply_user.id == context.bot.id and message.reply_to_message.text:
             logger.info('Replying to message %s', message.text)
             first_reply = await update.effective_message.reply_text(text='Thinking...', reply_to_message_id=message.id)
             current_time = datetime.datetime.now()
-            async for value in msg_process_main(context, message, True, user_id=message.user.id):
+            async for value in msg_process_main(context, message, True, user_id=update.effective_user.id):
                 if re.search('[A-Za-zА-яЁё]', value):
                     timedelta = datetime.datetime.now() - current_time
                     if timedelta.seconds > 3 and first_reply.text:
@@ -56,7 +56,7 @@ async def start2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
         logger.info('GPT4 Command used')
         await update.message.reply_text('Напиши вопрос \n'
-                                        'Если хочешь отменить диалог, используй /cancel_chat')
+                                        'Если хочешь отменить диалог, используй /cancel_chat \nЧтобы продолжить диалог, ответьте на предыдущее сообщение бота')
     except telegram.error as e:
         logger.exception(e)
 
@@ -65,7 +65,7 @@ async def start2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
 async def response2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
-        message = await update.effective_message.reply_text('Думаю...')
+        message = await update.effective_message.reply_text('Думаю...', reply_to_message_id=update.message.message_id)
         current_time = datetime.datetime.now()
         async for value in msg_process_main(context, update.effective_message, False, user_id=update.effective_user.id):
             if re.search('[A-Za-zА-яЁё]', value):
@@ -87,7 +87,7 @@ async def response2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     logger.info('Dalle3 Started')
     await update.message.reply_text('Напиши текст, по которому сгенерировать изображение: \n'
-                                    'Используй /cancel_generation чтобы отменить запрос')
+                                    'Используй /cancel_generation чтобы отменить запрос. ')
 
     return RESPONSE
 

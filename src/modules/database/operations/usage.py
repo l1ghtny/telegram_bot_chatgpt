@@ -12,7 +12,7 @@ async def add_gpt_usage(user_id, tokens_sent, tokens_received):
     if not user_exists:
         await add_user(user_id, payment_plan_id=1, country_id=1)
     usage_uuid = uuid.uuid4()
-    cost_usd = (tokens_sent*gpt4o_input_cost+tokens_received*gpt4o_output_cost)/1000
+    cost_usd = (tokens_sent * gpt4o_input_cost + tokens_received * gpt4o_output_cost) / 1000
     gpt_usage = GptUsage(
         request_uuid=usage_uuid,
         request_datetime=datetime.now(),
@@ -24,3 +24,10 @@ async def add_gpt_usage(user_id, tokens_sent, tokens_received):
     for session in get_session():
         session.add(gpt_usage)
         session.commit()
+
+
+async def add_image_usage(user_id, payment_plan_id, country_id):
+    user_exists = await check_user_exists(user_id)
+    if not user_exists:
+        await add_user(user_id, payment_plan_id, country_id)
+
