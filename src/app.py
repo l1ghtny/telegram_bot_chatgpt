@@ -3,10 +3,14 @@ import datetime
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ConversationHandler
 
-from credentials import bot_test_token
-from src.commands.ru.misc.misc_commands import start_main
+from credentials import bot_token
+from src.commands.ru.commands_text_ru import start_custom_keyboard_1_ru, start_custom_keyboard_3_ru
+from src.commands.ru.misc.misc_commands import start_main, callback_start_1, callback_start_2, payment_plans
 from src.commands.ru.openai_commands.openai_commands import secret_access, check_for_gpt_question, secret_access_remove, \
     start2, response2, ASKED, cancel2, RESPONSE, response, start, cancel
+from src.commands.ru.subscriptions.subscribe import subscribe, callback_subscribe_1, callback_subscribe_rf, \
+    callback_subscribe_3
+from src.commands.ru.subscriptions.unsubscribe import unsubscribe_command
 from src.modules.logs_setup import logger
 
 logger = logger.logging.getLogger("bot")
@@ -22,9 +26,17 @@ logger = logger.logging.getLogger("bot")
 
 
 def main() -> None:
-    application = Application.builder().token(bot_test_token).concurrent_updates(True).build()
+    application = Application.builder().token(bot_token).concurrent_updates(True).build()
     start_handler = CommandHandler('start', start_main)
     secret_handler = CommandHandler('secret_access', secret_access)
+    buttons_start_1 = MessageHandler(filters.Text(start_custom_keyboard_1_ru[0]), callback_start_1)
+    buttons_start_2 = MessageHandler(filters.Text(start_custom_keyboard_1_ru[1]), callback_start_2)
+    buttons_subcribe = CommandHandler(command='subscribe', callback=subscribe)
+    buttons_subscribe_1 = MessageHandler(filters.Text(start_custom_keyboard_3_ru[0]), callback_subscribe_1)
+    buttons_subscribe_2 = MessageHandler(filters.Text(start_custom_keyboard_3_ru[1]), callback_subscribe_rf)
+    buttons_subcribe_3 = MessageHandler(filters.Text(start_custom_keyboard_3_ru[2]), callback_subscribe_3)
+    unsubscribe = CommandHandler('unsubscribe', unsubscribe_command)
+    payment_plans_command = CommandHandler('payment_plans', payment_plans)
     mention_handler = MessageHandler(filters.TEXT, check_for_gpt_question)
     remove_handler = CommandHandler('secret_access_remove', secret_access_remove)
     gpt_handler = ConversationHandler(
@@ -50,8 +62,8 @@ def main() -> None:
     )
 
     application.add_handlers([gpt_handler, image_handler])
-    application.add_handlers([secret_handler, remove_handler, start_handler, mention_handler])
+    application.add_handlers([start_handler, buttons_start_1, buttons_start_2, buttons_subcribe, buttons_subscribe_1, buttons_subscribe_2, buttons_subcribe_3, unsubscribe, payment_plans_command])
+    application.add_handlers([secret_handler, remove_handler, mention_handler])
 
     logger.info(f'gpt bot started at {datetime.datetime.now()}')
-    logger.info('handlers: \n %s', application.handlers.items())
     application.run_polling(allowed_updates=Update.ALL_TYPES)

@@ -13,8 +13,14 @@ async def msg_process_main(context, message, multiple: bool, user_id) -> AsyncIt
         logger.info('got texts')
         formatted_dialog = await format_dialog(messages_texts, message, context)
         logger.info('formatted into dialog')
-        async for value in get_text_from_gpt(formatted_dialog, user_id):
-            yield value
+        async for value, usage in get_gpt4_response(formatted_dialog, user_id):
+            if value:
+                yield value
+            if usage:
+                try:
+                    await add_gpt_usage(user_id, usage.prompt_tokens, usage.completion_tokens)
+                except Exception as e:
+                    logger.exception(e)
     else:
         logger.info('Getting message text')
         message_meaning = message.text.replace(f'@{context.bot.username} ', '')

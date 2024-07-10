@@ -38,17 +38,20 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
         reply_user = message.reply_to_message.from_user
         if reply_user.id == context.bot.id and message.reply_to_message.text:
             logger.info('Replying to message %s', message.text)
-            first_reply = await update.effective_message.reply_text(text='Thinking...', reply_to_message_id=message.id)
+            first_reply = await update.effective_message.reply_text(text='Думаю...', reply_to_message_id=message.id)
             current_time = datetime.datetime.now()
             async for value in msg_process_main(context, message, True, user_id=update.effective_user.id):
                 if re.search('[A-Za-zА-яЁё]', value):
                     timedelta = datetime.datetime.now() - current_time
                     if timedelta.seconds > 3 and first_reply.text:
-                        await first_reply.edit_text(value)
+                        try:
+                            await first_reply.edit_text(value, parse_mode='MarkdownV2')
+                        except Exception as e:
+                            logger.error(e)
                         current_time = datetime.datetime.now()
             logger.info('Finished fetching reply')
             if first_reply.text != value:
-                await first_reply.edit_text(value)
+                await first_reply.edit_text(value, parse_mode='MarkdownV2')
         logger.info('All done')
 
 
@@ -71,11 +74,11 @@ async def response2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
             if re.search('[A-Za-zА-яЁё]', value):
                 timedelta = datetime.datetime.now() - current_time
                 if timedelta.seconds > 3 and message.text:
-                    await message.edit_text(text=value)
+                    await message.edit_text(text=value, parse_mode='MarkdownV2')
                     current_time = datetime.datetime.now()
         logger.info('Finished fetching reply')
         if message.text != value:
-            await message.edit_text(text=value)
+            await message.edit_text(text=value, parse_mode='MarkdownV2')
         logger.info('All done')
     except telegram.error as e:
         logger.exception(e)
