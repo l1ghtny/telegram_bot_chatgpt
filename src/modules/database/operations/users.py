@@ -5,7 +5,7 @@ from src.modules.database.sql_models import Users, Payments
 
 
 async def add_user(user_id, payment_plan_id, country_id):
-    user = Users(tg_id=user_id, payment_plan_id=payment_plan_id, language=country_id)
+    user = Users(tg_id=user_id, payment_plan_id=payment_plan_id, language=country_id, )
     for session in get_session():
         session.add(user)
         session.commit()

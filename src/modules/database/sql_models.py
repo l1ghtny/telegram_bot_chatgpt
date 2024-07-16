@@ -1,8 +1,10 @@
+import uuid
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import TEXT
-from sqlmodel import SQLModel, Field, Relationship, SMALLINT
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import UUID as UUIDSA
+from sqlmodel import SQLModel, Field, Relationship
 
 SQLModel.model_config.update(arbitrary_types_allowed=True)
 
@@ -11,8 +13,17 @@ class Users(SQLModel, table=True):
     # __table_args__ = {'schema': 'public'}  # Specify the custom schema here
 
     tg_id: int = Field(default=None, primary_key=True)
-    payment_plan_id: int = Field(SMALLINT)
-    language: int = Field(TEXT)
+    payment_plan_id: int = Field(nullable=False)
+    language: int = Field(nullable=False)
+    uuid: Optional[uuid.UUID] = Field(
+        sa_column=Column(
+            UUIDSA(as_uuid=True),
+            primary_key=True,
+            index=True,
+            nullable=False,
+        )
+    )
+    tg_tag: str = Field(nullable=False)
     payments: Optional[list['Payments']] = Relationship(back_populates="user")
     gpt_usage: Optional[list['GptUsage']] = Relationship(back_populates="user")
     image_usage: Optional[list['ImageUsage']] = Relationship(back_populates="user")
