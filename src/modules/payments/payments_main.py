@@ -13,8 +13,8 @@ async def payment_init(user_id, amount, payment_id, description, email, phone):
         "Description": description,
         "Token": token,
         "DATA": {
-            "Phone": "+71234567890",
-            "Email": "a@test.com"
+            "Phone": phone,
+            "Email": email
         },
         "Receipt": {
             "Email": email,

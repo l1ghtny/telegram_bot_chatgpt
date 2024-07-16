@@ -1,4 +1,4 @@
-import uuid
+import uuid as uuid_pkg
 from datetime import datetime
 from typing import Optional
 
@@ -13,9 +13,9 @@ class Users(SQLModel, table=True):
     # __table_args__ = {'schema': 'public'}  # Specify the custom schema here
 
     tg_id: int = Field(default=None, primary_key=True)
-    payment_plan_id: int = Field(nullable=False)
+    payment_plan_id: int = Field(foreign_key='payment_plans.id')
     language: int = Field(nullable=False)
-    uuid: Optional[uuid.UUID] = Field(
+    uuid: Optional[uuid_pkg.UUID] = Field(
         sa_column=Column(
             UUIDSA(as_uuid=True),
             primary_key=True,
@@ -24,6 +24,7 @@ class Users(SQLModel, table=True):
         )
     )
     tg_tag: str = Field(nullable=False)
+    payment_plan: 'PaymentPlan' = Relationship(back_populates="user")
     payments: Optional[list['Payments']] = Relationship(back_populates="user")
     gpt_usage: Optional[list['GptUsage']] = Relationship(back_populates="user")
     image_usage: Optional[list['ImageUsage']] = Relationship(back_populates="user")
@@ -69,10 +70,14 @@ class Language(SQLModel, table=True):
     name: str = Field(nullable=False)
 
 
-class PaymentPlans(SQLModel, table=True):
+class PaymentPlan(SQLModel, table=True):
+    __tablename__ = "payment_plans"
     id: int = Field(primary_key=True)
     name: str = Field(nullable=False)
     price_usd: float = Field(nullable=False)
     price_eur: float = Field(nullable=False)
     price_rub: float = Field(nullable=False)
     active: bool = Field(nullable=False)
+    gpt_allowed: int = Field(nullable=False)
+    images_allowed: int = Field(nullable=False)
+    user: Optional[list['Users']] = Relationship(back_populates="payment_plan")
