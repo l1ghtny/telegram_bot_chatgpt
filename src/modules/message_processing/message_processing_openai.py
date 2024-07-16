@@ -1,8 +1,8 @@
 from typing import AsyncIterable
 
+from src.modules.chat_bot.open_ai.open_ai_main import get_gpt4_response
 from src.modules.database.operations.usage import add_gpt_usage
 from src.modules.logs_setup import logger
-from src.modules.open_ai.open_ai_main import get_gpt4_response
 
 logger = logger.logging.getLogger("bot")
 
@@ -13,28 +13,37 @@ async def msg_process_main(context, message, multiple: bool, user_id) -> AsyncIt
         logger.info('got texts')
         formatted_dialog = await format_dialog(messages_texts, message, context)
         logger.info('formatted into dialog')
-        async for value, usage in get_gpt4_response(formatted_dialog, user_id):
-            if value:
-                yield value
-            if usage:
-                try:
-                    await add_gpt_usage(user_id, usage.prompt_tokens, usage.completion_tokens)
-                except Exception as e:
-                    logger.exception(e)
+        async for value in get_text_from_gpt(formatted_dialog, user_id):
+            yield value
     else:
         logger.info('Getting message text')
         message_meaning = message.text.replace(f'@{context.bot.username} ', '')
         messages = [{"role": "user", "content": f"{message_meaning}"}]
-        async for value, usage in get_gpt4_response(messages, user_id):
-            if value:
-                value_edited = value.replace('#', '')
-                # value_edited = value_edited1.replace('**', '*')
-                yield value_edited
-            if usage:
-                try:
-                    await add_gpt_usage(user_id, usage.prompt_tokens, usage.completion_tokens)
-                except Exception as e:
-                    logger.exception(e)
+        async for value in get_text_from_gpt(messages, user_id):
+            yield value
+
+
+async def get_text_from_gpt(messages, user):
+    async for value, usage in get_gpt4_response(messages):
+        if value:
+            value_edited = value.replace('#', '')
+            value_edited = value_edited.replace('!', '\!')
+            value_edited = value_edited.replace('.', '\.')
+            value_edited = value_edited.replace('?', '\?')
+            value_edited = value_edited.replace(',', '\,')
+            value_edited = value_edited.replace(';', '\;')
+            value_edited = value_edited.replace('=', '\=')
+            value_edited = value_edited.replace('-', '\-')
+            value_edited = value_edited.replace(')', '\)')
+            value_edited = value_edited.replace('(', '\(')
+            value_edited = value_edited.replace('**', '*')
+            value_edited = value_edited.replace('+', '\+')
+            yield value_edited
+        if usage:
+            try:
+                await add_gpt_usage(user, usage.prompt_tokens, usage.completion_tokens)
+            except Exception as e:
+                logger.error(e)
 
 
 async def get_replies(message) -> list:

@@ -17,7 +17,7 @@ logger = logger.logging.getLogger('bot')
 client_ai = AsyncOpenAI(api_key=openai_api_key, organization=openai_organization)
 
 
-async def get_gpt4_response(messages, user_id):
+async def get_gpt4_response(messages):
     try:
         all_messages = [{"role": "system", "content": f"{role}"}] + messages
         logger.info('Accessing OpenAI API')

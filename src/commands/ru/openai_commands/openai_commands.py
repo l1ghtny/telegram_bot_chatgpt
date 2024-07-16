@@ -6,9 +6,9 @@ from telegram import Update, BotCommandScopeChat
 from telegram.ext import ContextTypes, ConversationHandler
 
 from src.commands.ru.desc import commands
+from src.modules.chat_bot.open_ai.dalle3 import create_image
 from src.modules.logs_setup import logger
 from src.modules.message_processing.message_processing_openai import msg_process_main
-from src.modules.open_ai.dalle3 import create_image
 
 logger = logger.logging.getLogger("bot")
 
