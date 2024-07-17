@@ -40,3 +40,4 @@ async def add_payment(payment: Payments) -> Payments.uuid:
         session.commit()
         return payment.uuid
 
+

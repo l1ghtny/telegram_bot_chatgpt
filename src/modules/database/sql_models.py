@@ -33,7 +33,7 @@ class Payments(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.now)
     currency: int = Field(nullable=False)
     amount: float = Field(nullable=False)
-    service: int = Field(nullable=False)
+    payment_plan: int = Field(foreign_key='payment_plans.id')
     user_id: int = Field(foreign_key='users.tg_id')
     status: int = Field(nullable=False)
     user: 'Users' = Relationship(back_populates="payments")

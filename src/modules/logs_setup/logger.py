@@ -28,7 +28,7 @@ LOGGING_CONFIG = {
             "class": "src.modules.logs_setup.logger_settings.MyTimedRotatingFileHandler",
             "when": "h",
             "interval": 12,
-            "filename": "./logs_test/main_log.log",
+            "filename": "./logs/main_log.log",
             "encoding": "utf-8"
         },
     },
@@ -38,7 +38,7 @@ LOGGING_CONFIG = {
             "level": "DEBUG",
             "propagate": False
         },
-        "discord": {
+        "tg": {
             "handlers": ["console2", "file"],
             "level": "INFO",
             "propagate": False,

@@ -6,6 +6,7 @@ from telegram import Update, BotCommandScopeChat
 from telegram.ext import ContextTypes, ConversationHandler
 
 from src.commands.ru.desc import commands
+from src.modules.chat_bot.misc.actions import send_upload_photo_action
 from src.modules.chat_bot.open_ai.dalle3 import create_image
 from src.modules.logs_setup import logger
 from src.modules.message_processing.message_processing_openai import msg_process_main
@@ -95,6 +96,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return RESPONSE
 
 
+@send_upload_photo_action
 async def response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     message = await update.effective_message.reply_text('Генерирую изображение... Это может занять некоторое время...')
     image_url = await create_image(update.effective_message.text)
@@ -107,13 +109,6 @@ async def response(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     logger.info('cancelled')
     await update.effective_message.reply_text('Запрос отменён')
-
-    return ConversationHandler.END
-
-
-async def cancel2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    logger.info('cancelled')
-    await update.message.reply_text('Запрос отменён')
 
     return ConversationHandler.END
 
