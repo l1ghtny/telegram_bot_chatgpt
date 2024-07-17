@@ -17,3 +17,9 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 terminal_key = os.getenv("TERMINAL_KEY")
 terminal_pass = os.getenv("TERMINAL_PASS")
 serpapi_key = os.getenv("SERP_API_KEY")
+notification_url = 'https://gptbot.lightny.pro/api/v1/push'
+
+# TODO:
+#  1. Добавить сюда реальную ссылку, как будет готов fastapi
+
+

@@ -1,11 +1,12 @@
 import hashlib
 
-from credentials import terminal_key, terminal_pass
+from credentials import terminal_key, terminal_pass, notification_url
 from src.modules.database.operations.payments import get_payment_plan
+from src.modules.database.sql_models import Users
 
 
-async def payment_init(user_id, payment_id, description, email, phone):
-    current_payment_plan = await get_payment_plan(user_tg_id=user_id, user_uuid=None, payment_plan_id=None)
+async def payment_init(user: Users, payment_id, description, email, phone):
+    current_payment_plan = await get_payment_plan(user_tg_id=user.tg_id, user_uuid=None, payment_plan_id=None)
     # здесь надо прописать завершение функции на случай, если клиент всё ещё на бесплатном плане
     amount = current_payment_plan.price_rub
     token_data = f"{amount}{description}{payment_id}{terminal_pass}{terminal_key}"
@@ -16,6 +17,11 @@ async def payment_init(user_id, payment_id, description, email, phone):
         "OrderId": payment_id,
         "Description": description,
         "Token": token,
+        "CustomerKey": user.uuid,
+        "Recurrent": 'Y',
+        "PayType": 'O',
+        "Language": 'ru',
+        "NotificationURL": notification_url,
         "DATA": {
             "Phone": phone,
             "Email": email
@@ -26,26 +32,12 @@ async def payment_init(user_id, payment_id, description, email, phone):
             "Taxation": "usn_income",
             "Items": [
                 {
-                    "Name": "Наименование товара 1",
-                    "Price": 10000,
+                    "Name": current_payment_plan.name,
+                    "Price": amount*100,
                     "Quantity": 1,
-                    "Amount": 10000,
-                    "Tax": "vat10",
-                    "Ean13": "303130323930303030630333435"
-                },
-                {
-                    "Name": "Наименование товара 2",
-                    "Price": 3500,
-                    "Quantity": 2,
-                    "Amount": 7000,
-                    "Tax": "vat20"
-                },
-                {
-                    "Name": "Наименование товара 3",
-                    "Price": 550,
-                    "Quantity": 4,
-                    "Amount": 4200,
-                    "Tax": "vat10"
+                    "Amount": amount*100,
+                    "Tax": "none",
+                    "PaymentObject": 'service'
                 }
             ]
         }

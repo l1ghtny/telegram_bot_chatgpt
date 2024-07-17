@@ -13,8 +13,8 @@ logger = logger.logging.getLogger("bot")
 
 
 # TODO:
-#  0.5 Finish designing the database
-#  1. Add requests to database
+#  0 Finish designing the database
+#  0 Add requests to database
 #  2. Get subscription check into the gpt commands
 #  3. Mock analysis commands
 #  4. Create admin role with different menu
