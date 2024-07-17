@@ -1,10 +1,12 @@
+import uuid
+
 from sqlmodel import select
 
 from src.modules.database.sql_model_main import get_session
-from src.modules.database.sql_models import PaymentPlan, Users
+from src.modules.database.sql_models import PaymentPlan, Users, Payments
 
 
-async def get_payment_plan(payment_plan_id, user_tg_id, user_uuid):
+async def get_payment_plan(payment_plan_id, user_tg_id, user_uuid) -> PaymentPlan:
     if payment_plan_id:
         query = select(PaymentPlan).where(PaymentPlan.id == payment_plan_id)
     elif user_tg_id:
@@ -17,7 +19,7 @@ async def get_payment_plan(payment_plan_id, user_tg_id, user_uuid):
         return payment_plan[0]
 
 
-async def add_payment_plan(payment_plan: PaymentPlan):
+async def add_payment_plan(payment_plan: PaymentPlan) -> PaymentPlan.id:
     for session in get_session():
         results = session.exec(select(PaymentPlan).order_by(PaymentPlan.id)).all()
         if results:
@@ -29,4 +31,12 @@ async def add_payment_plan(payment_plan: PaymentPlan):
         session.add(payment_plan)
         session.commit()
         return payment_plan.id
+
+
+async def add_payment(payment: Payments) -> Payments.uuid:
+    for session in get_session():
+        payment.uuid = uuid.uuid4()
+        session.add(payment)
+        session.commit()
+        return payment.uuid
 

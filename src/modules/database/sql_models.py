@@ -10,15 +10,13 @@ SQLModel.model_config.update(arbitrary_types_allowed=True)
 
 
 class Users(SQLModel, table=True):
-    # __table_args__ = {'schema': 'public'}  # Specify the custom schema here
-
     tg_id: int = Field(default=None, primary_key=True)
     payment_plan_id: int = Field(foreign_key='payment_plans.id')
     language: int = Field(nullable=False)
     uuid: Optional[uuid_pkg.UUID] = Field(
         sa_column=Column(
             UUIDSA(as_uuid=True),
-            primary_key=True,
+            primary_key=False,
             index=True,
             nullable=False,
         )
@@ -31,14 +29,13 @@ class Users(SQLModel, table=True):
 
 
 class Payments(SQLModel, table=True):
-    # __table_args__ = {'schema': 'public'}  # Specify the custom schema here
-
     uuid: str = Field(primary_key=True)
     created_at: datetime = Field(default_factory=datetime.now)
     currency: int = Field(nullable=False)
     amount: float = Field(nullable=False)
     service: int = Field(nullable=False)
     user_id: int = Field(foreign_key='users.tg_id')
+    status: int = Field(nullable=False)
     user: 'Users' = Relationship(back_populates="payments")
 
 

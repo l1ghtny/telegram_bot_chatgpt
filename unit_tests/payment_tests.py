@@ -8,7 +8,12 @@ class PaymentTests(unittest.IsolatedAsyncioTestCase):
     plan: None
 
     def setUp(self):
-        self.addTypeEqualityFunc(PaymentPlan, lambda x, y, msg=None: x.id == y.id and x.name == y.name and x.price_eur == y.price_eur and x.price_rub == y.price_rub and x.price_usd == y.price_usd and x.active == y.active and x.gpt_allowed == y.gpt_allowed and x.images_allowed == y.images_allowed)
+        self.addTypeEqualityFunc(
+            PaymentPlan,
+            lambda x, y,
+            msg=None: x.id == y.id and x.name == y.name and x.price_eur == y.price_eur and x.price_rub == y.price_rub and x.price_usd == y.price_usd and x.active == y.active and x.gpt_allowed == y.gpt_allowed and x.images_allowed == y.images_allowed
+        )
+
     async def test_payment_plans_add(self):
         test_payment_plan = PaymentPlan(
             id=None,
