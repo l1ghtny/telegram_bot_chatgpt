@@ -1,19 +1,25 @@
 import datetime
 import hashlib
-from pprint import pprint
-
+import json
 import requests
+from pprint import pprint
 
 from credentials import terminal_key, terminal_pass, notification_url
 from src.constants import t_kassa_api_url
 from src.modules.database.operations.payments import get_payment_plan, add_payment
 from src.modules.database.sql_models import Users, Payments
+from src.modules.logs_setup import logger
+
+logger = logger.logging.getLogger("bot")
 
 
-async def payment_init(user: Users, description, email, phone):
-    current_payment_plan = await get_payment_plan(user_tg_id=user.tg_id, user_uuid=None, payment_plan_id=None)
+async def payment_init(user: Users, email, phone):
+    try:
+        current_payment_plan = await get_payment_plan(user_tg_id=user.tg_id, user_uuid=None, payment_plan_id=None)
+    except Exception as e:
+        logger.exception(e)
     # здесь надо прописать завершение функции на случай, если клиент всё ещё на бесплатном плане
-    amount = current_payment_plan.price_rub
+    amount = int(current_payment_plan.price_rub)
     payment = Payments(
         uuid=None,
         created_at=datetime.datetime.now(),
@@ -24,15 +30,16 @@ async def payment_init(user: Users, description, email, phone):
         payment_plan=current_payment_plan.id
     )
     payment_id = await add_payment(payment)
-    token_data = f"{amount}{description}{payment_id}{terminal_pass}{terminal_key}"
+    token_data = f"{amount*100}{str(user.uuid)}{current_payment_plan.name}ru{notification_url}{str(payment_id)}{terminal_pass}OY{terminal_key}"
     token = hashlib.sha256(token_data.encode()).hexdigest()
+    print(token_data)
     payment_data = {
         "TerminalKey": terminal_key,
-        "Amount": amount,
-        "OrderId": payment_id,
-        "Description": description,
+        "Amount": amount*100,
+        "OrderId": str(payment_id),
+        "Description": current_payment_plan.name,
         "Token": token,
-        "CustomerKey": user.uuid,
+        "CustomerKey": str(user.uuid),
         "Recurrent": 'Y',
         "PayType": 'O',
         "Language": 'ru',
@@ -57,6 +64,12 @@ async def payment_init(user: Users, description, email, phone):
             ]
         }
     }
+    url = f'{t_kassa_api_url}/Init'
+    print(url)
+    result = requests.post(url=url, json=payment_data, headers={'Content-Type': 'application/json'})
+    code = result.status_code
+    pprint(code)
+    result = result.json()
+    print(result)
 
-    result = requests.post(t_kassa_api_url, data=payment_data, headers={'Content-Type': 'application/json'}).json()
-    pprint(result)
+    return result['PaymentURL']

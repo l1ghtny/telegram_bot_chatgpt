@@ -13,10 +13,6 @@ terminal_pass = os.getenv("TERMINAL_PASS")
 serpapi_key = os.getenv("SERP_API_KEY")
 langsmith_api_key = os.getenv("LANGSMITH_API_KEY")
 tavily_api_key = os.getenv("TAVILY_API_KEY")
-openai_api_key = os.getenv("OPENAI_API_KEY")
-terminal_key = os.getenv("TERMINAL_KEY")
-terminal_pass = os.getenv("TERMINAL_PASS")
-serpapi_key = os.getenv("SERP_API_KEY")
 notification_url = 'https://gptbot.lightny.pro/api/v1/push'
 
 # TODO:

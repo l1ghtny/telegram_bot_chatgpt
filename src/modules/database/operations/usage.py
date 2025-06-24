@@ -4,19 +4,16 @@ from datetime import datetime
 from src.constants import gpt4o_input_cost, gpt4o_output_cost
 from src.modules.database.operations.users import add_user, check_user_exists
 from src.modules.database.sql_model_main import get_session
-from src.modules.database.sql_models import GptUsage
+from src.modules.database.sql_models import GptUsage, Users
 
 
-async def add_gpt_usage(user, tokens_sent, tokens_received):
-    user_exists = await check_user_exists(user.id)
-    if not user_exists:
-        await add_user(user.id, payment_plan_id=1, country_id=1)
+async def add_gpt_usage(user: Users, tokens_sent, tokens_received):
     usage_uuid = uuid.uuid4()
     cost_usd = (tokens_sent * gpt4o_input_cost + tokens_received * gpt4o_output_cost) / 1000
     gpt_usage = GptUsage(
         request_uuid=usage_uuid,
         request_datetime=datetime.now(),
-        user_id=user.id,
+        user_id=user.tg_id,
         tokens_sent=tokens_sent,
         tokens_received=tokens_received,
         cost_usd=cost_usd

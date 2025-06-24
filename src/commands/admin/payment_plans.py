@@ -12,6 +12,6 @@ IMAGES_ALLOWED = 6
 
 
 async def add_payment_plan_start(update: Update, context: CallbackContext):
-    await context.bot.send_message('please provide the name for your payment plan')
+    await context.bot.send_message(text='please provide the name for your payment plan', chat_id=update.effective_chat.id)
 
     return

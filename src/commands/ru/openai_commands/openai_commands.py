@@ -1,6 +1,5 @@
 import datetime
 import re
-
 import telegram
 from telegram import Update, BotCommandScopeChat
 from telegram.ext import ContextTypes, ConversationHandler
@@ -24,7 +23,7 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
         logger.info('Replying to message %s', message.text)
         first_reply = await update.effective_message.reply_text(text='Thinking...', reply_to_message_id=message.id)
         current_time = datetime.datetime.now()
-        async for value in msg_process_main(context, message, False, user_id=update.effective_user.id):
+        async for value in msg_process_main(context, message, False, effective_user=update.effective_user):
             if re.search('[A-Za-zА-яЁё]', value):
                 timedelta = datetime.datetime.now() - current_time
                 if timedelta.seconds > 3 and first_reply.text:
@@ -41,7 +40,7 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
             logger.info('Replying to message %s', message.text)
             first_reply = await update.effective_message.reply_text(text='Думаю...', reply_to_message_id=message.id)
             current_time = datetime.datetime.now()
-            async for value in msg_process_main(context, message, True, user_id=update.effective_user.id):
+            async for value in msg_process_main(context, message, True, effective_user=update.effective_user):
                 if re.search('[A-Za-zА-яЁё]', value):
                     timedelta = datetime.datetime.now() - current_time
                     if timedelta.seconds > 3 and first_reply.text:
@@ -71,7 +70,7 @@ async def response2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
         message = await update.effective_message.reply_text('Думаю...', reply_to_message_id=update.message.message_id)
         current_time = datetime.datetime.now()
-        async for value in msg_process_main(context, update.effective_message, False, user_id=update.effective_user.id):
+        async for value in msg_process_main(context, update.effective_message, False, effective_user=update.effective_user):
             if re.search('[A-Za-zА-яЁё]', value):
                 timedelta = datetime.datetime.now() - current_time
                 if timedelta.seconds > 3 and message.text:
