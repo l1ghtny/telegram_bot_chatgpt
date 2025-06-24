@@ -1,9 +1,8 @@
-import telegram
 from typing import AsyncIterable
 
+import telegram
+
 from src.modules.chat_bot.open_ai.open_ai_main import get_gpt4_response
-from src.modules.database.operations.usage import add_gpt_usage
-from src.modules.database.operations.users import get_user_by_tg_id, add_user, check_user_exists
 from src.modules.logs_setup import logger
 
 logger = logger.logging.getLogger("bot")
@@ -12,10 +11,10 @@ logger = logger.logging.getLogger("bot")
 async def msg_process_main(context, message, multiple: bool, effective_user: telegram._update.Update.effective_user) -> AsyncIterable:
     logger.info('process main')
     try:
-        user_exists = await check_user_exists(effective_user.id)
-        if not user_exists:
-            await add_user(effective_user.id, payment_plan_id=1, country_id=1, tg_tag=effective_user.username)
-        user = await get_user_by_tg_id(effective_user.id)
+        # user_exists = await check_user_exists(effective_user.id)
+        # if not user_exists:
+        #     await add_user(effective_user.id, payment_plan_id=1, country_id=1, tg_tag=effective_user.username)
+        # user = await get_user_by_tg_id(effective_user.id)
         if multiple:
             messages_texts = await get_replies(message)
             logger.info('got texts')
@@ -50,11 +49,11 @@ async def get_text_from_gpt(messages, user):
             value_edited = value_edited.replace('**', '*')
             value_edited = value_edited.replace('+', '\+')
             yield value_edited
-        if usage:
-            try:
-                await add_gpt_usage(user, usage.prompt_tokens, usage.completion_tokens)
-            except Exception as e:
-                logger.error(e)
+        # if usage:
+        #     try:
+        #         await add_gpt_usage(user, usage.prompt_tokens, usage.completion_tokens)
+        #     except Exception as e:
+        #         logger.error(e)
 
 
 async def get_replies(message) -> list:
