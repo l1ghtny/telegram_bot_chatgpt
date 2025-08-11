@@ -37,17 +37,17 @@ async def get_text_from_gpt(messages, user):
     async for value, usage in get_gpt4_response(messages):
         if value:
             value_edited = value.replace('#', '')
-            value_edited = value_edited.replace('!', '\!')
-            value_edited = value_edited.replace('.', '\.')
-            value_edited = value_edited.replace('?', '\?')
-            value_edited = value_edited.replace(',', '\,')
-            value_edited = value_edited.replace(';', '\;')
-            value_edited = value_edited.replace('=', '\=')
-            value_edited = value_edited.replace('-', '\-')
-            value_edited = value_edited.replace(')', '\)')
-            value_edited = value_edited.replace('(', '\(')
+            value_edited = value_edited.replace('!', '\\!')
+            value_edited = value_edited.replace('.', '\\.')
+            value_edited = value_edited.replace('?', '\\?')
+            value_edited = value_edited.replace(',', '\\,')
+            value_edited = value_edited.replace(';', '\\;')
+            value_edited = value_edited.replace('=', '\\=')
+            value_edited = value_edited.replace('-', '\\-')
+            value_edited = value_edited.replace(')', '\\)')
+            value_edited = value_edited.replace('(', '\\(')
             value_edited = value_edited.replace('**', '*')
-            value_edited = value_edited.replace('+', '\+')
+            value_edited = value_edited.replace('+', '\\+')
             yield value_edited
         # if usage:
         #     try:

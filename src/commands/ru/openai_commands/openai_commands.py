@@ -1,5 +1,6 @@
 import datetime
 import re
+
 import telegram
 from telegram import Update, BotCommandScopeChat
 from telegram.ext import ContextTypes, ConversationHandler
@@ -30,6 +31,7 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
                     await first_reply.edit_text(value)
                     current_time = datetime.datetime.now()
         logger.info('Finished fetching reply')
+        print('Finished fetching reply')
         if first_reply.text != value:
             await first_reply.edit_text(value)
         logger.info('All done')
@@ -58,6 +60,7 @@ async def check_for_gpt_question(update: Update, context: ContextTypes.DEFAULT_T
 async def start2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     try:
         logger.info('GPT4 Command used')
+        print('GPT4 Command used')
         await update.message.reply_text('Напиши вопрос \n'
                                         'Если хочешь отменить диалог, используй /cancel_chat \nЧтобы продолжить диалог, ответьте на предыдущее сообщение бота')
     except telegram.error as e:
