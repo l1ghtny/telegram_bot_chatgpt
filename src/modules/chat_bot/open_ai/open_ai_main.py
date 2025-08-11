@@ -11,6 +11,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 model3 = 'gpt-3.5-turbo-16k'
 model4 = 'gpt-4-turbo-preview'
 model4o = 'gpt-4o'
+model5 = 'gpt-5'
 role = """You are a nice and articulated helper"""
 
 logger = logger.logging.getLogger('bot')
@@ -22,7 +23,7 @@ async def get_gpt4_response(messages):
         all_messages = [{"role": "system", "content": f"{role}"}] + messages
         logger.info('Accessing OpenAI API')
         response = await client_ai.chat.completions.create(
-            model=model4o,
+            model=model5,
             messages=all_messages,
             stream=True,
             stream_options={"include_usage": True}
